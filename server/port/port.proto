@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option go_package = "github.com/arxdsilva/jpar/server/port";
+option java_multiple_files = true;
+option java_package = "port";
+option java_outer_classname = "port";
+
+package routeguide;
+
+
+service PortDomainService {
+    rpc UpsertPort(Port) returns (PortResponse) {}
+    rpc ListPorts(List) returns (stream Port) {}
+}
+
+message Port {
+    string name = 1;
+    string city = 2;
+    string country = 3;
+    repeated string alias = 4;
+    repeated string regions = 5;
+    repeated float coordinates = 6;
+    string province = 7;
+    string timezone = 8;
+    repeated string unlocs = 9;
+    string code = 10;
+    string port_id = 11;
+}
+
+message PortResponse {
+    string error = 1;
+}
+
+message List {
+    string message = 1;
+}
+
