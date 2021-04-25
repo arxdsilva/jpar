@@ -1,11 +1,14 @@
 package reader
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	pb "github.com/arxdsilva/jpar/server/port"
 	"github.com/kpango/glg"
 	"google.golang.org/grpc"
 )
@@ -61,11 +64,14 @@ func StreamFile(semaphore chan CityPort) (err error) {
 
 func SendInfo(semaphore chan CityPort) {
 	for {
-		city, open := <-semaphore
+		port, open := <-semaphore
 		if !open {
 			return
 		}
-		fmt.Println("send city: ", city.Code, city.Province)
+		fmt.Println("send port: ", port.Code, port.Province)
+		go func ()  {
+			sendPortToServer(port)
+		}
 	}
 }
 
@@ -76,18 +82,30 @@ func sendPortToServer(cp *CityPort) {
 		log.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	// c := pb.NewGreeterClient(conn)
-	// // Contact the server and print out its response.
-	// name := defaultName
-	// if len(os.Args) > 1 {
-	// 	name = os.Args[1]
-	// }
-	// ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	// defer cancel()
-	// r, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
-	// if err != nil {
-	// 	log.Fatalf("could not greet: %v", err)
-	// }
-	// log.Printf("Greeting: %s", r.GetMessage())
+	c := pb.NewPortDomainServiceClient(conn)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	pds := pb.Port{
+		Name:        cp.Name,
+		City:        cp.City,
+		Country:     cp.Country,
+		Alias:       cp.Alias,
+		Regions:     cp.Regions,
+		Coordinates: cp.Coordinates,
+		Province:    cp.Province,
+		Timezone:    cp.Timezone,
+		Unlocs:      cp.Unlocs,
+		Code:        cp.Code,
+		PortId:      cp.PortID,
+	}
+	resp, err := c.UpsertPort(ctx, pds)
+	if err != nil {
+		glg.Error("[sendPortToServer] err ", err.Error())
+		return
+	}
+	if resp.Error != "" {
+		return
+	}
+	glg.Info("[sendPortToServer] ok ", cp.PortID)
 	return
 }
