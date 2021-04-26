@@ -7,7 +7,8 @@ services:
   client-server:
     image: client:latest
     environment:
-      - BACKEND=backend
+      - MAX_GOROUTINES=20
+      - BACKEND_URI=backend:8083
     ports:
       - "8888:8888"
   backend:
