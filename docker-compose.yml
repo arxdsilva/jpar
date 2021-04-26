@@ -4,7 +4,7 @@ volumes:
   database: { }
 
 services:
-  client-server:
+  client:
     image: client:latest
     environment:
       - MAX_GOROUTINES=20
@@ -25,8 +25,6 @@ services:
     image: "postgres"
     volumes:
       - database:/var/lib/postgresql/data:Z
-    env_file:
-      - ./.envs/.dev/.postgres
     ports:
       - "5432:5432"
     environment:
