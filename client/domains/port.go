@@ -1,0 +1,19 @@
+package domains
+
+type Port struct {
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Coordinates []float64 `json:"coordinates"`
+	City        string    `json:"city"`
+	Province    string    `json:"province"`
+	Country     string    `json:"country"`
+	Alias       []string  `json:"alias"`
+	Regions     []string  `json:"regions"`
+	Timezone    string    `json:"timezone"`
+	Unlocs      []string  `json:"unlocs"`
+	Code        string    `json:"code"`
+}
+
+type PortService interface {
+	GetPorts() ([]Port, error)
+}
