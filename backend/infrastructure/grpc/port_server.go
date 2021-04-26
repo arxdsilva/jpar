@@ -43,7 +43,15 @@ func (s *portServer) UpsertPort(ctx context.Context, in *pb.Port, opts ...grpc.C
 
 func (s *portServer) ListPorts(ctx context.Context, in *pb.List, opts ...grpc.CallOption) (lpc pb.PortDomainService_ListPortsClient, err error) {
 	glg.Info("[ListPorts] start")
-
+	ports, err := s.svc.ListPorts()
+	if err != nil {
+		lpc.Error = err.Error()
+		return
+	}
+	server := pb.PortDomainService_ListPortsServer{}
+	for _, p := range ports {
+		server.Send(&p)
+	}
 	glg.Info("[ListPorts] finish")
 	return
 }
