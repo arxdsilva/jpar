@@ -6,12 +6,13 @@ import (
 	"os"
 
 	"github.com/arxdsilva/jpar/client/domains"
+	"github.com/arxdsilva/jpar/client/infrastructure/config"
 	"github.com/arxdsilva/jpar/client/infrastructure/grpc_client"
 	"github.com/kpango/glg"
 )
 
-func StreamFile(semaphore chan domains.Port) (err error) {
-	defer close(semaphore)
+func StreamFile(c config.Config) (err error) {
+	defer close(c.Semaphore)
 	file, err := os.Open("ports.json")
 	if err != nil {
 		glg.Error("Failed to load file: %v", err)
@@ -28,14 +29,14 @@ func StreamFile(semaphore chan domains.Port) (err error) {
 		// read ID "AEAJM"
 		t, err := decoder.Token()
 		glg.Info("[streamFile] token, err: ", t, err)
-		c := &domains.Port{}
-		err = decoder.Decode(c)
+		port := &domains.Port{}
+		err = decoder.Decode(port)
 		if err != nil {
 			glg.Info("[streamFile] decode err: ", err.Error())
 		}
-		c.ID = t.(string)
-		glg.Info("[streamFile] CITY: ", c.City, c.ID)
-		semaphore <- *c
+		port.ID = t.(string)
+		glg.Info("[streamFile] CITY: ", port.City, port.ID)
+		c.Semaphore <- *port
 	}
 	token, err = decoder.Token()
 	if err != nil {
@@ -45,15 +46,13 @@ func StreamFile(semaphore chan domains.Port) (err error) {
 	return
 }
 
-func SendInfo(semaphore chan domains.Port) {
+func SendInfo(c config.Config) {
 	for {
-		port, open := <-semaphore
+		port, open := <-c.Semaphore
 		if !open {
 			return
 		}
 		fmt.Println("send port: ", port.Code, port.Province)
-		go func() {
-			grpc_client.SendPortToServer(port)
-		}()
+		go func() { grpc_client.SendPortToServer(port) }()
 	}
 }

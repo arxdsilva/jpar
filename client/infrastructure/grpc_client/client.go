@@ -33,9 +33,9 @@ func SendPortToServer(cp domains.Port) {
 		Timezone:    cp.Timezone,
 		Unlocs:      cp.Unlocs,
 		Code:        cp.Code,
-		ID:          cp.ID,
+		Id:          cp.ID,
 	}
-	resp, err := c.UpsertPort(ctx, pds)
+	resp, err := c.UpsertPort(ctx, &pds)
 	if err != nil {
 		glg.Error("[sendPortToServer] err ", err.Error())
 		return
