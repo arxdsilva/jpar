@@ -2,13 +2,15 @@
 
 two apis that communicate by gRPC. client API also has a rest API.
 
-## docker-compose
+## Running
 
 Despite having a docker-compose you'll need to build the containers and then run the compose file. After building the services you can run it with:
 
 ```shell
     $ docker-compose up
 ```
+
+After running all apps just get into the `localhost:8888` to access the home or `localhost:8888/ports` to view ports.
 
 
 ## client

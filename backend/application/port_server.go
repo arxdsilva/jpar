@@ -18,7 +18,7 @@ func NewPortServer(svc domain.PortService) *portServer {
 }
 
 func (s *portServer) UpsertPort(ctx context.Context, in *pb.Port) (pr *pb.PortResponse, err error) {
-	glg.Info("[UpsertPort] start")
+	pr = &pb.PortResponse{}
 	port := domain.Port{
 		ID:          in.Id,
 		Name:        in.Name,
@@ -34,10 +34,9 @@ func (s *portServer) UpsertPort(ctx context.Context, in *pb.Port) (pr *pb.PortRe
 	}
 	err = s.svc.UpsertPort(port)
 	if err != nil {
-		pr.Error = err.Error()
+		pr.Error = "error"
 		return
 	}
-	glg.Info("[UpsertPort] finish")
 	return
 }
 
@@ -45,6 +44,7 @@ func (s *portServer) ListPorts(in *pb.List, stream pb.PortDomainService_ListPort
 	glg.Info("[ListPorts] start")
 	ports, err := s.svc.ListPorts()
 	if err != nil {
+		glg.Error("[ListPorts] svc.ListPorts ", err.Error())
 		return
 	}
 	for _, p := range ports {
@@ -61,7 +61,9 @@ func (s *portServer) ListPorts(in *pb.List, stream pb.PortDomainService_ListPort
 			Unlocs:      p.Unlocs,
 			Code:        p.Code,
 		}
-		stream.Send(port)
+		if err := stream.Send(port); err != nil {
+			glg.Error("[ListPorts] err ", err.Error())
+		}
 	}
 	glg.Info("[ListPorts] finish")
 	return

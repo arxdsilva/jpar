@@ -1,17 +1,17 @@
 package domain
 
 type Port struct {
-	ID          string    `json:"id"`
-	Name        string    `json:"name"`
-	Coordinates []float32 `json:"coordinates"`
-	City        string    `json:"city"`
-	Province    string    `json:"province"`
-	Country     string    `json:"country"`
-	Alias       []string  `json:"alias"`
-	Regions     []string  `json:"regions"`
-	Timezone    string    `json:"timezone"`
-	Unlocs      []string  `json:"unlocs"`
-	Code        string    `json:"code"`
+	ID          string    `json:"id",pg:"id"`
+	Name        string    `json:"name",pg:"name"`
+	Coordinates []float32 `json:"coordinates",pg:"coordinates"`
+	City        string    `json:"city",pg:"city"`
+	Province    string    `json:"province",pg:"province"`
+	Country     string    `json:"country",pg:"country"`
+	Alias       []string  `json:"alias",pg:"alias"`
+	Regions     []string  `json:"regions",pg:"regions"`
+	Timezone    string    `json:"timezone",pg:"timezone"`
+	Unlocs      []string  `json:"unlocs",pg:"unlocs"`
+	Code        string    `json:"code",pg:"code"`
 }
 
 type PortService interface {

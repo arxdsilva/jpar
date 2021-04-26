@@ -14,7 +14,6 @@ import (
 
 // this should be refactored into a struct that doesnt open 1 conn to each request
 func SendPortToServer(cp domains.Port) {
-	// Set up a connection to the server.
 	conn, err := grpc.Dial(os.Getenv("BACKEND_URI"), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		glg.Error("[SendPortToServer] did not connect:", err.Error())
@@ -62,40 +61,29 @@ func GetAllPorts() (ps []domains.Port, err error) {
 	defer cancel()
 	list := &pb.List{}
 	listener, err := c.ListPorts(ctx, list)
-	timeout := time.NewTicker(30 * time.Second)
 	for {
-		select {
-		case <-timeout.C:
-			err = listener.CloseSend()
-			if err != nil {
-				glg.Error("[GetAllPorts] error closing listener: ", err.Error())
-				return ps, nil
-			}
-			return
-		default:
-			resp, errL := listener.Recv()
-			if errL != nil && err != io.EOF {
-				glg.Error("[GetAllPorts] error closing listener: ", errL.Error())
-				return ps, errL
-			}
-			if err == io.EOF {
-				glg.Info("[GetAllPorts] stream finished: ")
-				return
-			}
-			port := domains.Port{
-				ID:          resp.Id,
-				Name:        resp.Name,
-				Coordinates: resp.Coordinates,
-				City:        resp.City,
-				Province:    resp.Province,
-				Country:     resp.Country,
-				Alias:       resp.Alias,
-				Regions:     resp.Regions,
-				Timezone:    resp.Timezone,
-				Unlocs:      resp.Unlocs,
-				Code:        resp.Code,
-			}
-			ps = append(ps, port)
+		resp, errL := listener.Recv()
+		if errL != nil && errL != io.EOF {
+			glg.Error("[GetAllPorts] error receiving: ", errL.Error())
+			return ps, errL
 		}
+		if errL == io.EOF {
+			glg.Info("[GetAllPorts] stream finished: ")
+			return
+		}
+		port := domains.Port{
+			ID:          resp.Id,
+			Name:        resp.Name,
+			Coordinates: resp.Coordinates,
+			City:        resp.City,
+			Province:    resp.Province,
+			Country:     resp.Country,
+			Alias:       resp.Alias,
+			Regions:     resp.Regions,
+			Timezone:    resp.Timezone,
+			Unlocs:      resp.Unlocs,
+			Code:        resp.Code,
+		}
+		ps = append(ps, port)
 	}
 }

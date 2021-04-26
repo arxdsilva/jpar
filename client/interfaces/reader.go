@@ -28,15 +28,15 @@ func streamFile(c config.Config) (err error) {
 		// read ID "AEAJM"
 		t, err := decoder.Token()
 		if err != nil {
-			glg.Info("[streamFile] Token err: ", err.Error())
+			glg.Error("[streamFile] Token err: ", err.Error())
 		}
 		port := &domains.Port{}
 		err = decoder.Decode(port)
 		if err != nil {
-			glg.Info("[streamFile] decode err: ", err.Error())
+			glg.Error("[streamFile] decode err: ", err.Error())
 		}
 		port.ID = t.(string)
-		glg.Info("[streamFile] port: ", port.ID)
+		// glg.Debug("[streamFile] port: ", port.ID)
 		c.Semaphore <- *port
 	}
 	token, err = decoder.Token()
@@ -53,7 +53,7 @@ func sendPortData(c config.Config) {
 		if !open {
 			return
 		}
-		glg.Info("[sendPortData] ", port.ID)
+		// glg.Debug("[sendPortData] ", port.ID)
 		go func() { grpc_client.SendPortToServer(port) }()
 	}
 }

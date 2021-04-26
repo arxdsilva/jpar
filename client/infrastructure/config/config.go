@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/arxdsilva/jpar/client/application"
 	"github.com/arxdsilva/jpar/client/domains"
@@ -27,6 +28,9 @@ func Load() (c Config) {
 	c.PortService = application.NewPortService()
 	if os.Getenv("BACKEND_URI") == "" {
 		glg.Fatal("BACKEND_URI cannot be unset")
+	}
+	if os.Getenv("ENV") == "" {
+		time.Sleep(time.Second * 10)
 	}
 	return
 }
