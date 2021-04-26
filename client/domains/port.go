@@ -3,7 +3,7 @@ package domains
 type Port struct {
 	ID          string    `json:"id"`
 	Name        string    `json:"name"`
-	Coordinates []float64 `json:"coordinates"`
+	Coordinates []float32 `json:"coordinates"`
 	City        string    `json:"city"`
 	Province    string    `json:"province"`
 	Country     string    `json:"country"`

@@ -24,7 +24,7 @@ message Port {
     string timezone = 8;
     repeated string unlocs = 9;
     string code = 10;
-    string port_id = 11;
+    string id = 11;
 }
 
 message PortResponse {
