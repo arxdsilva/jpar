@@ -27,14 +27,16 @@ func streamFile(c config.Config) (err error) {
 	for decoder.More() {
 		// read ID "AEAJM"
 		t, err := decoder.Token()
-		glg.Info("[streamFile] token, err: ", t, err)
+		if err != nil {
+			glg.Info("[streamFile] Token err: ", err.Error())
+		}
 		port := &domains.Port{}
 		err = decoder.Decode(port)
 		if err != nil {
 			glg.Info("[streamFile] decode err: ", err.Error())
 		}
 		port.ID = t.(string)
-		glg.Info("[streamFile] CITY: ", port.City, port.ID)
+		glg.Info("[streamFile] port: ", port.ID)
 		c.Semaphore <- *port
 	}
 	token, err = decoder.Token()

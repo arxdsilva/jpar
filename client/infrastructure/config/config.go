@@ -25,6 +25,9 @@ func Load() (c Config) {
 	}
 	c.Semaphore = make(chan domains.Port, maxGoroutines)
 	c.PortService = application.NewPortService()
+	if os.Getenv("BACKEND_URI") == "" {
+		glg.Fatal("BACKEND_URI cannot be unset")
+	}
 	return
 }
 

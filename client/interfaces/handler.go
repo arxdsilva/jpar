@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/arxdsilva/jpar/client/infrastructure/config"
+	"github.com/arxdsilva/jpar/client/middlewares"
 	"github.com/kpango/glg"
 	"github.com/labstack/echo/v4"
 )
@@ -13,6 +14,7 @@ func Run(c config.Config) {
 	go sendPortData(c)
 	service := NewHTTP(c.PortService)
 	e := echo.New()
+	middlewares.Load(e)
 	e.GET("/", service.HealthCheck)
 	e.GET("/ports", service.PortsList)
 	glg.Info("starting server at ", config.Port())
