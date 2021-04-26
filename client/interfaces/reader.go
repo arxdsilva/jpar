@@ -1,8 +1,7 @@
-package reader
+package interfaces
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 
 	"github.com/arxdsilva/jpar/client/domains"
@@ -11,7 +10,7 @@ import (
 	"github.com/kpango/glg"
 )
 
-func StreamFile(c config.Config) (err error) {
+func streamFile(c config.Config) (err error) {
 	defer close(c.Semaphore)
 	file, err := os.Open("ports.json")
 	if err != nil {
@@ -46,13 +45,13 @@ func StreamFile(c config.Config) (err error) {
 	return
 }
 
-func SendInfo(c config.Config) {
+func sendPortData(c config.Config) {
 	for {
 		port, open := <-c.Semaphore
 		if !open {
 			return
 		}
-		fmt.Println("send port: ", port.Code, port.Province)
+		glg.Info("[sendPortData] ", port.ID)
 		go func() { grpc_client.SendPortToServer(port) }()
 	}
 }

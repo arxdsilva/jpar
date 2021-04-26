@@ -9,6 +9,8 @@ import (
 )
 
 func Run(c config.Config) {
+	go streamFile(c)
+	go sendPortData(c)
 	service := NewHTTP(c.PortService)
 	e := echo.New()
 	e.GET("/", service.HealthCheck)
