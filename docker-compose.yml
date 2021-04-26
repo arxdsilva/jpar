@@ -1,0 +1,35 @@
+version: '3'
+
+volumes:
+  database: { }
+
+services:
+  client-server:
+    image: client:latest
+    environment:
+      - BACKEND=backend
+    ports:
+      - "8888:8888"
+  backend:
+    image: backend:latest
+    depends_on:
+        - postgres
+    environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_USER=postgres
+    ports:
+        - "8083:8083"
+  postgres:
+    image: "postgres"
+    volumes:
+      - database:/var/lib/postgresql/data:Z
+    env_file:
+      - ./.envs/.dev/.postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=America/Sao_Paulo
