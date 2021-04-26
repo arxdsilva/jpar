@@ -15,6 +15,6 @@ type Port struct {
 }
 
 type PortService interface {
-	UpsertPort(domain.Port) error
+	UpsertPort(Port) error
 	ListPorts() ([]Port, error)
 }
