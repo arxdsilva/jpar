@@ -3,7 +3,6 @@ package grpc_client
 import (
 	"context"
 	"io"
-	"log"
 	"os"
 	"time"
 
@@ -18,7 +17,8 @@ func SendPortToServer(cp domains.Port) {
 	// Set up a connection to the server.
 	conn, err := grpc.Dial(os.Getenv("BACKEND_URI"), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		glg.Error("[SendPortToServer] did not connect:", err.Error())
+		return
 	}
 	defer conn.Close()
 	c := pb.NewPortDomainServiceClient(conn)
@@ -53,7 +53,8 @@ func GetAllPorts() (ps []domains.Port, err error) {
 	ps = []domains.Port{}
 	conn, err := grpc.Dial(os.Getenv("BACKEND_URI"), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		glg.Error("[GetAllPorts] did not connect:", err.Error())
+		return
 	}
 	defer conn.Close()
 	c := pb.NewPortDomainServiceClient(conn)
