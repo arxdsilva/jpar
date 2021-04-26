@@ -4,12 +4,14 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/arxdsilva/jpar/client/application"
 	"github.com/arxdsilva/jpar/client/domains"
 	"github.com/kpango/glg"
 )
 
 type Config struct {
-	Semaphore chan domains.Port
+	Semaphore   chan domains.Port
+	PortService domains.PortService
 }
 
 func Load() (c Config) {
@@ -22,6 +24,7 @@ func Load() (c Config) {
 		maxGoroutines = 2
 	}
 	c.Semaphore = make(chan domains.Port, maxGoroutines)
+	c.PortService = application.NewPortService()
 	return
 }
 
