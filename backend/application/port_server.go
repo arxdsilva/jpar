@@ -1,4 +1,4 @@
-package grpc
+package application
 
 import (
 	"context"

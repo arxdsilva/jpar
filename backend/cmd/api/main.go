@@ -3,8 +3,8 @@ package main
 import (
 	"net"
 
+	"github.com/arxdsilva/jpar/backend/application"
 	"github.com/arxdsilva/jpar/backend/infrastructure/config"
-	infraGRPC "github.com/arxdsilva/jpar/backend/infrastructure/grpc"
 	"github.com/arxdsilva/jpar/backend/infrastructure/repository"
 	"github.com/arxdsilva/jpar/backend/interfaces"
 	pb "github.com/arxdsilva/jpar/client/port"
@@ -22,7 +22,7 @@ func main() {
 	server := grpc.NewServer()
 	repo := repository.NewService()
 	portService := interfaces.NewPortService(repo)
-	pb.RegisterPortDomainServiceServer(server, infraGRPC.NewPortServer(portService))
+	pb.RegisterPortDomainServiceServer(server, application.NewPortServer(portService))
 	reflection.Register(server)
 	glg.Info("starting server at :8083")
 	err = server.Serve(listen)
