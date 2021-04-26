@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/arxdsilva/jpar/client/domains"
-	pb "github.com/arxdsilva/jpar/port"
+	pb "github.com/arxdsilva/jpar/client/port"
 	"github.com/kpango/glg"
 	"google.golang.org/grpc"
 )

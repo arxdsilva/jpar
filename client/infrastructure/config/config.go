@@ -24,3 +24,11 @@ func Load() (c Config) {
 	c.Semaphore = make(chan domains.Port, maxGoroutines)
 	return
 }
+
+func Port() string {
+	p := os.Getenv("PORT")
+	if p != "" {
+		return ":" + p
+	}
+	return ":8888"
+}
