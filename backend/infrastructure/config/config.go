@@ -5,7 +5,7 @@ import (
 	"time"
 
 	migrations "github.com/go-pg/migrations/v8"
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v10"
 	"github.com/kpango/glg"
 )
 
@@ -50,7 +50,7 @@ func setConfig() {
 		return
 	}
 	Get.DB = pg.Connect(&pg.Options{
-		Addr:     "postgres:5432",
+		Addr:     "localhost:5432",
 		User:     "postgres",
 		Password: "postgres",
 		Database: "postgres",

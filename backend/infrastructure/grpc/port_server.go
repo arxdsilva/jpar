@@ -6,21 +6,21 @@ import (
 	"github.com/arxdsilva/jpar/backend/domain"
 	pb "github.com/arxdsilva/jpar/client/port"
 	"github.com/kpango/glg"
-	"google.golang.org/grpc"
 )
 
 type portServer struct {
 	svc domain.PortService
+	pb.UnimplementedPortDomainServiceServer
 }
 
 func NewPortServer(svc domain.PortService) *portServer {
 	return &portServer{svc: svc}
 }
 
-func (s *portServer) UpsertPort(ctx context.Context, in *pb.Port, opts ...grpc.CallOption) (pr *pb.PortResponse, err error) {
+func (s *portServer) UpsertPort(ctx context.Context, in *pb.Port) (pr *pb.PortResponse, err error) {
 	glg.Info("[UpsertPort] start")
 	port := domain.Port{
-		ID:          in.ID,
+		ID:          in.Id,
 		Name:        in.Name,
 		Coordinates: in.Coordinates,
 		City:        in.City,
@@ -41,16 +41,27 @@ func (s *portServer) UpsertPort(ctx context.Context, in *pb.Port, opts ...grpc.C
 	return
 }
 
-func (s *portServer) ListPorts(ctx context.Context, in *pb.List, opts ...grpc.CallOption) (lpc pb.PortDomainService_ListPortsClient, err error) {
+func (s *portServer) ListPorts(in *pb.List, stream pb.PortDomainService_ListPortsServer) (err error) {
 	glg.Info("[ListPorts] start")
 	ports, err := s.svc.ListPorts()
 	if err != nil {
-		lpc.Error = err.Error()
 		return
 	}
-	server := pb.PortDomainService_ListPortsServer{}
 	for _, p := range ports {
-		server.Send(&p)
+		port := &pb.Port{
+			Id:          p.ID,
+			Name:        p.Name,
+			Coordinates: p.Coordinates,
+			City:        p.City,
+			Province:    p.Province,
+			Country:     p.Country,
+			Alias:       p.Alias,
+			Regions:     p.Regions,
+			Timezone:    p.Timezone,
+			Unlocs:      p.Unlocs,
+			Code:        p.Code,
+		}
+		stream.Send(port)
 	}
 	glg.Info("[ListPorts] finish")
 	return

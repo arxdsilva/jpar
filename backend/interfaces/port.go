@@ -9,8 +9,8 @@ type portService struct {
 	repo repository.Service
 }
 
-func NewPortService() domain.PortService {
-	return &portService{}
+func NewPortService(r repository.Service) domain.PortService {
+	return &portService{r}
 }
 
 func (ps *portService) UpsertPort(p domain.Port) (err error) {
@@ -18,5 +18,5 @@ func (ps *portService) UpsertPort(p domain.Port) (err error) {
 }
 
 func (ps *portService) ListPorts() (dp []domain.Port, err error) {
-	return ps.repo.ListPorts()
+	return ps.repo.GetPorts()
 }

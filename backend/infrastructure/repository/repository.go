@@ -19,7 +19,7 @@ func NewService() Service {
 func (s *service) GetPorts() (dp []domain.Port, err error) {
 	dp = []domain.Port{}
 	sql := `select * FROM ports`
-	_, err = config.Get.DB.Query(dp, sql, dp.ID)
+	_, err = config.Get.DB.Query(dp, sql)
 	return
 }
 
