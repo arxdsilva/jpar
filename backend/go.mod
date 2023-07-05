@@ -7,5 +7,5 @@ require (
 	github.com/go-pg/migrations/v8 v8.1.0
 	github.com/go-pg/pg/v10 v10.4.0
 	github.com/kpango/glg v1.5.8
-	google.golang.org/grpc v1.37.0
+	google.golang.org/grpc v1.53.0
 )
